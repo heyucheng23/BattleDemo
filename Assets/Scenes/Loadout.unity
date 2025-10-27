@@ -2371,18 +2371,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoadoutManager
   weapons:
-  - {fileID: 11400000, guid: 1c49bff6fddc55a4798e6a8972a844a6, type: 2}
-  - {fileID: 11400000, guid: 1ad1b0bdb944d7340b062c63a9dd81c7, type: 2}
-  - {fileID: 11400000, guid: 029375b9ce242894c86683412110981d, type: 2}
+  - {fileID: 11400000, guid: 789a83c74578a60499a3707f425f4f07, type: 2}
+  - {fileID: 11400000, guid: c907c1c3d0694544ebd369a7353f6bf0, type: 2}
+  - {fileID: 11400000, guid: fef50916bbcadbb4ea329fdda5d8ec82, type: 2}
   - {fileID: 11400000, guid: a1881b1c86a65ac48a99f7bd334c80bc, type: 2}
   armors:
   - {fileID: 11400000, guid: 30d32247819fb654b9aa6ce3a73a26d0, type: 2}
   - {fileID: 11400000, guid: 349217e62c9d4b14ea3d7ab7f11dcb8a, type: 2}
   - {fileID: 11400000, guid: dc1ddffba47a6b74081c77ad3ccd9ef1, type: 2}
-  strengthRing: {fileID: 11400000, guid: ba517503299b1fe45983c331a1c1a30a, type: 2}
-  defenseAmulet: {fileID: 11400000, guid: 1d894b2bae26ee2408d110822ce73f7f, type: 2}
-  healthPotion: {fileID: 11400000, guid: 255d284092380e34e97a53e9e9cd5984, type: 2}
-  damageBomb: {fileID: 11400000, guid: 41b22a1707443284c86a76c92788855f, type: 2}
+  strengthRing: {fileID: 11400000, guid: d5a11b884e8277c4bb7bafe163272d6d, type: 2}
+  defenseAmulet: {fileID: 11400000, guid: 3e3fcc18a432b38469a3ff9b960f7029, type: 2}
+  healthPotion: {fileID: 11400000, guid: 42af4b60412c0c641aa63064662eb29c, type: 2}
+  damageBomb: {fileID: 11400000, guid: 5fce6a4c72953e24c82ab86f76e4241a, type: 2}
   stage:
     HP_boss: 0
     ATK_boss: 0
