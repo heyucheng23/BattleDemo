@@ -1,0 +1,77 @@
+# ============ Unity 基础 ============
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+sysinfo.txt
+
+# ============ 自动生成的 WebGL 构建中间文件 ============
+/Build/
+!/docs/Build/
+/docs/TemplateData/
+/docs/StreamingAssets/
+
+# ============ VS / Rider / VSCode 相关 ============
+.vs/
+.idea/
+*.sln
+*.csproj
+*.unityproj
+*.user
+*.pidb
+*.booproj
+*.svd
+*.suo
+*.userprefs
+
+# ============ Unity Cloud / Collaborate ============
+/Unity/
+.collabignore
+/.plastic/
+*.plastic
+
+# ============ 其他临时或缓存文件 ============
+*.tmp
+*.bak
+*.backup
+*.orig
+*.manifest
+*.meta~
+.DS_Store
+Thumbs.db
+*.apk
+*.aab
+*.exe
+*.app
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.crash
+*.stacktrace
+
+# ============ 本地配置 ============
+/Assets/AssetStoreTools*
+/Assets/Plugins/Editor/JetBrains*
+/Logs/
+/obj/
+/Temp/
+/Builds/
+/Library/
+
+# ============ WebGL / GitHub Pages ============
+# 保留 docs 目录（里面是你的 Web 构建）
+!docs/
+!docs/index.html
+!docs/Build/
+!docs/TemplateData/
+
+# ============ 如果有大文件（可选） ============
+*.unitypackage
+*.zip
+*.rar
+*.7z
