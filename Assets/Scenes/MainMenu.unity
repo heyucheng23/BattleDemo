@@ -2607,7 +2607,7 @@ MonoBehaviour:
   menuRoot: {fileID: 236885606}
   panelOptions: {fileID: 475808213}
   fader: {fileID: 1335922341}
-  gameSceneName: Loadout
+  gameSceneName: Town
   fadeTime: 0.35
 --- !u!1 &1872617964
 GameObject:
