@@ -15,6 +15,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Loadout.unity
     guid: a797e0d045e3a3e43b84f490137649f1
   - enabled: 1
+    path: Assets/Scenes/TransitionMap.unity
+    guid: bc9c6d9d3d6509649b696e4bd87189d4
+  - enabled: 1
+    path: Assets/Scenes/Castle.unity
+    guid: e0ccf32d986359a4c9f0a527f52d1248
+  - enabled: 1
     path: Assets/Scenes/Battle.unity
     guid: 8adcb8614c05b854fa16026d9c8c4991
   - enabled: 1

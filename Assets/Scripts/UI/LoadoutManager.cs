@@ -274,6 +274,6 @@ public class LoadoutManager : MonoBehaviour
         PlayerPrefs.SetInt("healPerPotion",  healthPotion ? healthPotion.healAmount : 0);
         PlayerPrefs.SetInt("dmgPerBomb",     damageBomb   ? damageBomb.damageAmount : 0);
 
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Battle");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("TransitionMap");
     }
 }
