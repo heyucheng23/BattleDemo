@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;   // 👈 新增：方便直接用 SceneManager
 
 public class LoadoutManager : MonoBehaviour
 {
@@ -38,6 +39,11 @@ public class LoadoutManager : MonoBehaviour
     public TMP_Text statDEFText;
     public Image heroPortrait;              // 可选
     public Sprite heroPlaceholder;          // 可选占位立绘
+
+    // ---------------- 场景跳转相关 ----------------
+    [Header("Scene / Flow")]
+    [Tooltip("不填时默认使用 TransitionMap")]
+    public string defaultNextSceneName = "TransitionMap";
 
     // ---------------- Selections ----------------
     int weaponIndex = -1;   // -1 表示未选（Dropdown 的 0 = None，所以 index = dropdown.value - 1）
@@ -103,7 +109,7 @@ public class LoadoutManager : MonoBehaviour
 
         // --- Buttons
         if (btnSuggest) btnSuggest.onClick.AddListener(SuggestOptimal);
-        if (btnStart)   btnStart.onClick.AddListener(ProceedToBattle); // 只要把新按钮拖到这里就能接管
+        if (btnStart)   btnStart.onClick.AddListener(ProceedToBattle); // 继续保留原来的用法
 
         // --- 左侧信息初始化（可选）
         if (heroNameText) heroNameText.text = "Hero";
@@ -256,8 +262,8 @@ public class LoadoutManager : MonoBehaviour
         RefreshUI();
     }
 
-    // ---------------- Proceed ----------------
-    public void ProceedToBattle()
+    // ---------------- 保存数据（封装一下） ----------------
+    void SaveLoadoutToPrefs()
     {
         // 保存选择
         PlayerPrefs.SetInt("weaponIndex", weaponIndex);
@@ -273,7 +279,30 @@ public class LoadoutManager : MonoBehaviour
         PlayerPrefs.SetInt("totalCost",      TotalCost());
         PlayerPrefs.SetInt("healPerPotion",  healthPotion ? healthPotion.healAmount : 0);
         PlayerPrefs.SetInt("dmgPerBomb",     damageBomb   ? damageBomb.damageAmount : 0);
+    }
 
-        UnityEngine.SceneManagement.SceneManager.LoadScene("TransitionMap");
+    // ---------------- Proceed ----------------
+    // 原来的按钮仍然可以用：默认跳到 defaultNextSceneName（不填则为 TransitionMap）
+    public void ProceedToBattle()
+    {
+        ProceedToScene(defaultNextSceneName);
+    }
+
+    // 新增：可以在 Button 的 OnClick 里传入不同场景名
+    // 例如：ProceedToScene("BattleScene") 或 ProceedToScene("TownScene")
+    public void ProceedToScene(string sceneName)
+    {
+        SaveLoadoutToPrefs();
+
+        string targetScene = sceneName;
+        if (string.IsNullOrEmpty(targetScene))
+        {
+            // 如果没传，就用默认
+            targetScene = string.IsNullOrEmpty(defaultNextSceneName)
+                ? "TransitionMap"
+                : defaultNextSceneName;
+        }
+
+        SceneManager.LoadScene(targetScene);
     }
 }
