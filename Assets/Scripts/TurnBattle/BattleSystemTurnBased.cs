@@ -766,9 +766,10 @@ public class BattleSystemTurnBased : MonoBehaviour
         }
     }
 
-    // EndPanel 按钮：跳转 Result
+    // EndPanel 按钮：跳转 Result（在 Button 的 OnClick 绑定这个）
     public void OnClick_GoToResult()
     {
+        Debug.Log("Result button clicked");
         UnityEngine.SceneManagement.SceneManager.LoadScene("Result");
     }
 
