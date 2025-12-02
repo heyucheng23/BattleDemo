@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 19714600}
   - component: {fileID: 19714599}
   - component: {fileID: 19714598}
+  - component: {fileID: 19714601}
   m_Layer: 5
   m_Name: HealBtn
   m_TagString: Untagged
@@ -240,6 +241,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19714596}
   m_CullTransparentMesh: 1
+--- !u!114 &19714601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19714596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1233350442}
+          m_TargetAssemblyTypeName: BattleSystemTurnBased, Assembly-CSharp
+          m_MethodName: OnHoverHeal
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &98245733
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,6 +493,7 @@ GameObject:
   - component: {fileID: 180598560}
   - component: {fileID: 180598559}
   - component: {fileID: 180598558}
+  - component: {fileID: 180598561}
   m_Layer: 5
   m_Name: BombBtn
   m_TagString: Untagged
@@ -572,6 +603,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 180598556}
   m_CullTransparentMesh: 1
+--- !u!114 &180598561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180598556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1233350442}
+          m_TargetAssemblyTypeName: BattleSystemTurnBased, Assembly-CSharp
+          m_MethodName: OnHoverBomb
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &189070622 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114816333258567436, guid: c8e9e0dc2eb174635861b990cee2b0bb, type: 3}
@@ -2301,10 +2361,6 @@ MonoBehaviour:
   invertBossSlider: 1
   endPanel: {fileID: 1677313849}
   txtEndTitle: {fileID: 1708049855}
-  resultSfxSource: {fileID: 0}
-  winSfx: {fileID: 8300000, guid: 4dbfbd1a56081db4ca174255a4d56b1f, type: 3}
-  loseSfx: {fileID: 8300000, guid: 35ce408210dfa9843ba14da86f8efb4e, type: 3}
-  drawSfx: {fileID: 0}
   btnAttack: {fileID: 98245735}
   btnBomb: {fileID: 180598558}
   btnHeal: {fileID: 19714598}
@@ -2316,6 +2372,7 @@ MonoBehaviour:
   bombFlightDuration: 0.5
   bombArcHeight: 200
   skillExtraDelay: 1.5
+  maxSkillUses: 2
 --- !u!224 &1267463339 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 224924297674140736, guid: c8e9e0dc2eb174635861b990cee2b0bb, type: 3}
@@ -2768,8 +2825,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -6.3115845, y: -180.14005}
-  m_SizeDelta: {x: -674.4835, y: -360.2775}
+  m_AnchoredPosition: {x: -0.45074463, y: -174.2792}
+  m_SizeDelta: {x: -662.7618, y: -348.5558}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1471463144
 MonoBehaviour:
@@ -4565,6 +4622,7 @@ GameObject:
   - component: {fileID: 2123806125}
   - component: {fileID: 2123806124}
   - component: {fileID: 2123806123}
+  - component: {fileID: 2123806127}
   m_Layer: 5
   m_Name: SKILL
   m_TagString: Untagged
@@ -4674,6 +4732,35 @@ RectTransform:
   m_AnchoredPosition: {x: 65.9, y: -20.2}
   m_SizeDelta: {x: 109.4718, y: 34.5573}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2123806127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2123806122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1233350442}
+          m_TargetAssemblyTypeName: BattleSystemTurnBased, Assembly-CSharp
+          m_MethodName: OnHoverSkill
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -738,6 +738,8 @@ GameObject:
   - component: {fileID: 186174787}
   - component: {fileID: 186174789}
   - component: {fileID: 186174790}
+  - component: {fileID: 186174792}
+  - component: {fileID: 186174791}
   m_Layer: 0
   m_Name: Woman
   m_TagString: Untagged
@@ -840,6 +842,71 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &186174791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186174786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba2d60ccfb94d1849939b77c13ae3ecd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCInteractable
+  dialogue: {fileID: 11400000, guid: 4bedf9c4327eda543a475e76775b92f2, type: 2}
+  sys: {fileID: 927082326}
+  playerTag: Player
+  hintUI: {fileID: 0}
+  dialogueAnchor: {fileID: 1793222287}
+  follower: {fileID: 0}
+  enableDebugLogs: 1
+--- !u!61 &186174792
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186174786}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.37, y: 0.46}
+    newSize: {x: 0.37, y: 0.46}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.37, y: 0.46}
+  m_EdgeRadius: 0
 --- !u!1 &208547568
 GameObject:
   m_ObjectHideFlags: 0
@@ -1965,8 +2032,7 @@ MonoBehaviour:
   advanceKey: 101
   hintWhileTyping: Press E to skip/continue
   hintWhenComplete: 'Press E to continue '
-  loadNextSceneOnEnd: 1
-  nextSceneName: Loadout
+  shopPanelToOpen: {fileID: 0}
 --- !u!4 &927082327
 Transform:
   m_ObjectHideFlags: 0
@@ -3380,7 +3446,7 @@ Transform:
   m_GameObject: {fileID: 1432240033}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.350878, y: -1.0347499, z: -10}
+  m_LocalPosition: {x: -2.389873, y: -1.0421499, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4507,7 +4573,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.0307, y: -4.8191}
+  m_AnchoredPosition: {x: 6.0307, y: 32}
   m_SizeDelta: {x: 472.6793, y: 168.2553}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2000555207
@@ -4523,7 +4589,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TypewriterText
   text: {fileID: 2000555209}
-  charsPerSecond: 30
+  charsPerSecond: 15
   audioSource: {fileID: 0}
   blipClip: {fileID: 0}
 --- !u!222 &2000555208
@@ -4563,8 +4629,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294111986
-  m_fontColor: {r: 0.9490196, g: 0.9490196, b: 0.9490196, a: 1}
+    rgba: 4289761418
+  m_fontColor: {r: 0.54249734, g: 0.5647424, b: 0.6886792, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -4750,7 +4816,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.46, y: -48.67}
+  m_AnchoredPosition: {x: 5.46, y: -44}
   m_SizeDelta: {x: 473.42, y: 124.79}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2004911717
@@ -4824,8 +4890,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4862,7 +4928,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: -14.662838, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

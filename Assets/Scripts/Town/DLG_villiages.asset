@@ -10,14 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea925d3cc37801445bf7c6edb0b42744, type: 3}
-  m_Name: DLG_Trader
+  m_Name: DLG_villiages
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - speaker: Trader
-    text: "Welcome! Fresh steel, sturdy leather, and a few\u2026 rarities."
-  - speaker: Player
-    text: "I\u2019m not here to browse. Show me what\u2019s useful."
-  - speaker: Trader
-    text: "Straight to business, I like that. Here\u2019s what I\u2019ve got."
-  afterAction: 1
-  shopSceneName: Loadout
+  - speaker: 'Female vilager:'
+    text: Do you hear about that? The deadline of BA885 is coming soon...
+  - speaker: 'Male vilager:'
+    text: Damm! I have not reviewd the slides yet
+  afterAction: 0
+  shopSceneName: Shop

@@ -10,6 +10,7 @@ public class SceneStartFader : MonoBehaviour
     public Color fadeColor = Color.black;   // 一开始的遮罩颜色（一般黑色）
 
     private CanvasGroup canvasGroup;
+    private GameObject canvasRoot;          // 记录我们创建的 Canvas，方便最后销毁
 
     void Start()
     {
@@ -19,20 +20,24 @@ public class SceneStartFader : MonoBehaviour
 
     void SetupCanvas()
     {
-        // 1. 创建一个全屏 Canvas
-        GameObject canvasGO = new GameObject("SceneStartFaderCanvas");
-        canvasGO.transform.SetParent(transform);
-        Canvas canvas = canvasGO.AddComponent<Canvas>();
+        // 1. 创建一个全屏 Canvas（只负责显示，不接收点击）
+        canvasRoot = new GameObject("SceneStartFaderCanvas");
+        canvasRoot.transform.SetParent(transform);
+        Canvas canvas = canvasRoot.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 9999;   // 在最上层
 
-        canvasGO.AddComponent<GraphicRaycaster>();
+        // ❌ 不要加 GraphicRaycaster，这样整个 Canvas 不会拦截 UI 事件
+        // canvasRoot.AddComponent<GraphicRaycaster>();
 
         // 2. 创建一个全屏 Image 作为遮罩
         GameObject imageGO = new GameObject("FadeImage");
-        imageGO.transform.SetParent(canvasGO.transform);
+        imageGO.transform.SetParent(canvasRoot.transform);
         Image img = imageGO.AddComponent<Image>();
         img.color = fadeColor;
+
+        // ⭐ 关键：让这块遮罩不拦截点击
+        img.raycastTarget = false;
 
         RectTransform rt = img.rectTransform;
         rt.anchorMin = Vector2.zero;
@@ -58,5 +63,11 @@ public class SceneStartFader : MonoBehaviour
         }
 
         canvasGroup.alpha = 0f;
+
+        // ⭐ 关键：淡入完成后删除整个 Canvas，彻底不留遮挡物
+        if (canvasRoot != null)
+        {
+            Destroy(canvasRoot);
+        }
     }
 }

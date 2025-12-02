@@ -65,12 +65,6 @@ public class BattleSystemTurnBased : MonoBehaviour
     public GameObject endPanel;
     public TMP_Text   txtEndTitle;
 
-    [Header("Result SFX (胜利/失败音效)")]
-    public AudioSource resultSfxSource;  // 用来播结算音效的 AudioSource
-    public AudioClip   winSfx;           // 胜利音效
-    public AudioClip   loseSfx;          // 失败音效
-    public AudioClip   drawSfx;          // 可选：同归于尽/平局音效
-
     [Header("指令按钮（回合制用）")]
     public Button btnAttack;
     public Button btnBomb;
@@ -88,6 +82,10 @@ public class BattleSystemTurnBased : MonoBehaviour
     [Header("Skill Extra Delay (技能动画后额外等待时间)")]
     [Range(0f, 3f)]
     public float skillExtraDelay = 0.8f;   // 你可以调大让 Boss 后手更慢
+
+    [Header("Skill 使用次数")]
+    public int maxSkillUses = 2;           // ⭐ Skill 总共可用次数
+    int skillUsesLeft;                     // ⭐ 当前剩余次数
 
     // ---- 关卡/战斗静态数据 ----
     StageConfig S;
@@ -136,18 +134,6 @@ public class BattleSystemTurnBased : MonoBehaviour
         if (sliderBossHP && invertBossSlider)
             sliderBossHP.direction = Slider.Direction.RightToLeft;
         if (endPanel) endPanel.SetActive(false);
-
-        // 结果音效 AudioSource（如果没拖，就自动创建一个）
-        if (!resultSfxSource)
-        {
-            resultSfxSource = GetComponent<AudioSource>();
-            if (!resultSfxSource)
-            {
-                resultSfxSource = gameObject.AddComponent<AudioSource>();
-                resultSfxSource.playOnAwake = false;
-                resultSfxSource.loop = false;
-            }
-        }
     }
 
     void Start()
@@ -156,12 +142,12 @@ public class BattleSystemTurnBased : MonoBehaviour
         S = StageConfigLoader.Load();
         if (S == null) S = new StageConfig
         {
-            HP0 = 100,
-            HP_boss = 300,
-            ATK0 = 20,
+            HP0 = 250,
+            HP_boss = 905,
+            ATK0 = 40,
             DEF0 = 0,
-            ATK_boss = 25,
-            T_max = 10
+            ATK_boss = 32,
+            T_max = 15
         };
 
         // 读取 Loadout 购买结果
@@ -206,6 +192,9 @@ public class BattleSystemTurnBased : MonoBehaviour
         // 动画速度
         if (playerAnim) playerAnim.speed = animSpeed;
         if (bossAnim)   bossAnim.speed   = animSpeed;
+
+        // Skill 次数
+        skillUsesLeft = Mathf.Max(0, maxSkillUses);
 
         // 按钮回调
         if (btnAttack) btnAttack.onClick.AddListener(OnClick_Attack);
@@ -256,9 +245,15 @@ public class BattleSystemTurnBased : MonoBehaviour
     void SetCommandButtonsInteractable(bool interactable)
     {
         if (btnAttack) btnAttack.interactable = interactable;
-        if (btnBomb)   btnBomb.interactable   = interactable && (bombsLeft > 0 && bombDmg > 0);
-        if (btnHeal)   btnHeal.interactable   = interactable && (potionsLeft > 0 && healPerPotion > 0);
-        if (btnSkill)  btnSkill.interactable  = interactable;
+
+        if (btnBomb)
+            btnBomb.interactable = interactable && (bombsLeft > 0 && bombDmg > 0);
+
+        if (btnHeal)
+            btnHeal.interactable = interactable && (potionsLeft > 0 && healPerPotion > 0);
+
+        if (btnSkill)
+            btnSkill.interactable = interactable && (skillUsesLeft > 0);  // ⭐ Skill 没次数就灰掉
     }
 
     // ============================
@@ -288,6 +283,7 @@ public class BattleSystemTurnBased : MonoBehaviour
     public void OnClick_Skill()
     {
         if (state != BattleState.PlayerTurn || battleEnded) return;
+        if (skillUsesLeft <= 0) return;           // ⭐ 没次数直接不响应
         StartCoroutine(PlayerSkillRoutine());
     }
 
@@ -301,7 +297,6 @@ public class BattleSystemTurnBased : MonoBehaviour
         state = BattleState.Busy;
         SetCommandButtonsInteractable(false);
 
-        // 普通攻击动画
         if (playerAnim) playerAnim.SetTrigger("Attack");
         yield return Delay(preHitDelayPlayer);
 
@@ -335,30 +330,21 @@ public class BattleSystemTurnBased : MonoBehaviour
         state = BattleState.Busy;
         SetCommandButtonsInteractable(false);
 
-        // Throw 动画
         if (playerAnim) playerAnim.SetTrigger("Throw");
-
-        // 等“抬手”的时间点
         yield return Delay(bombPreDelay);
 
-        // 起点/终点
         Vector3 startPos = bombSpawnPoint ? bombSpawnPoint.position : player.transform.position;
         Vector3 endPos   = bombTargetPoint ? bombTargetPoint.position : boss.transform.position;
 
-        // 生成飞行中的炸弹
         GameObject bombObj = null;
         if (bombPrefab)
-        {
             bombObj = Instantiate(bombPrefab, startPos, Quaternion.identity);
-        }
 
-        // 抛物线飞行
         if (bombObj)
             yield return StartCoroutine(AnimateBombProjectile(bombObj.transform, startPos, endPos, bombFlightDuration, bombArcHeight));
         else
             yield return Delay(bombFlightDuration);
 
-        // 到达目标 → 计算伤害 + 爆炸特效
         int beforeHP = boss.currentHP;
         int rawDmg   = Mathf.Max(0, bombDmg);
         boss.TakeDamage(rawDmg);
@@ -373,14 +359,12 @@ public class BattleSystemTurnBased : MonoBehaviour
         if (bossAnim) bossAnim.SetTrigger("Hurt");
         RefreshHUD();
 
-        // 爆炸特效
         if (bombExplosionPrefab)
         {
             GameObject boom = Instantiate(bombExplosionPrefab, endPos, Quaternion.identity);
             Destroy(boom, 1.0f);
         }
 
-        // 炸弹本体销毁
         if (bombObj) Destroy(bombObj);
 
         yield return Delay(bombPostDelay);
@@ -401,7 +385,6 @@ public class BattleSystemTurnBased : MonoBehaviour
         state = BattleState.Busy;
         SetCommandButtonsInteractable(false);
 
-        // 治疗动画
         if (playerAnim) playerAnim.SetTrigger("Heal");
         yield return Delay(preHitDelayPlayer);
 
@@ -425,7 +408,6 @@ public class BattleSystemTurnBased : MonoBehaviour
         }
 
         RefreshHUD();
-
         yield return Delay(postHitDelayPlayer);
 
         yield return Delay(turnGap);
@@ -440,7 +422,6 @@ public class BattleSystemTurnBased : MonoBehaviour
 
         if (playerAnim) playerAnim.SetTrigger("Skill");
 
-        // 技能前摇
         yield return Delay(preHitDelayPlayer);
 
         int rawDmg   = Mathf.RoundToInt(player.battleATK * 1.5f);
@@ -449,11 +430,15 @@ public class BattleSystemTurnBased : MonoBehaviour
         boss.TakeDamage(rawDmg);
         int dealt = Mathf.Clamp(beforeHP - Mathf.Max(0, boss.currentHP), 0, rawDmg);
 
-        if (txtInfo) txtInfo.text = $"You cast a skill and deal {dealt} damage!";
+        // ⭐ 扣除次数
+        skillUsesLeft = Mathf.Max(0, skillUsesLeft - 1);
+
+        if (txtInfo)
+            txtInfo.text = $"You cast a skill and deal {dealt} damage! (Skill left: {skillUsesLeft}/{maxSkillUses})";
+
         if (bossAnim) bossAnim.SetTrigger("Hurt");
         RefreshHUD();
 
-        // 技能后摇：这里让 Boss 等更久再还手
         yield return Delay(postHitDelayPlayer);
         yield return Delay(skillExtraDelay);
 
@@ -528,7 +513,6 @@ public class BattleSystemTurnBased : MonoBehaviour
             yield break;
         }
 
-        // 一轮结束
         turnsUsed++;
 
         if (turnsUsed >= S.T_max)
@@ -566,10 +550,6 @@ public class BattleSystemTurnBased : MonoBehaviour
             else               txtInfo.text = "Battle ended.";
         }
 
-        // 播放结算音效
-        PlayResultSfx(win, lose, bothDead);
-
-        // 记录结果
         battleEndTime = Time.unscaledTime;
         int endPlayerHP = player ? Mathf.Max(0, player.currentHP) : 0;
         int endBossHP   = boss   ? Mathf.Max(0, boss.currentHP)   : 0;
@@ -596,10 +576,8 @@ public class BattleSystemTurnBased : MonoBehaviour
         PlayerPrefs.SetInt("result_tmax",                S.T_max);
         PlayerPrefs.Save();
 
-        // 清 Trigger
         ResetAllTriggers();
 
-        // 播结束动画
         if (win)
         {
             if (playerAnim) playerAnim.SetTrigger("Win");
@@ -615,7 +593,6 @@ public class BattleSystemTurnBased : MonoBehaviour
             if (bossAnim)   bossAnim.SetTrigger("Death");
         }
 
-        // EndPanel 或直接跳场景
         if (endPanel)
         {
             if (txtEndTitle)
@@ -637,26 +614,6 @@ public class BattleSystemTurnBased : MonoBehaviour
     {
         yield return Delay(t);
         UnityEngine.SceneManagement.SceneManager.LoadScene("Result");
-    }
-
-    // 播放结算音效
-    void PlayResultSfx(bool win, bool lose, bool bothDead)
-    {
-        if (!resultSfxSource) return;
-
-        AudioClip clip = null;
-
-        if (win && winSfx)
-            clip = winSfx;
-        else if (lose && loseSfx)
-            clip = loseSfx;
-        else if (bothDead && drawSfx)
-            clip = drawSfx;
-
-        if (clip != null)
-        {
-            resultSfxSource.PlayOneShot(clip);
-        }
     }
 
     // ============================
@@ -704,6 +661,9 @@ public class BattleSystemTurnBased : MonoBehaviour
             if (boss && bossFillImage)
                 bossFillImage.color   = HpColor((float)boss.currentHP   / Mathf.Max(1, boss.maxHP));
         }
+
+        // 按钮状态也随时刷新一下
+        SetCommandButtonsInteractable(state == BattleState.PlayerTurn && !battleEnded);
     }
 
     Color HpColor(float ratio)
@@ -766,14 +726,14 @@ public class BattleSystemTurnBased : MonoBehaviour
         }
     }
 
-    // EndPanel 按钮：跳转 Result（在 Button 的 OnClick 绑定这个）
     public void OnClick_GoToResult()
     {
-        Debug.Log("Result button clicked");
         UnityEngine.SceneManagement.SceneManager.LoadScene("Result");
     }
 
+    // =========================================
     // 由炸弹抛物体调用：落地后造成伤害 + 播放爆炸动画
+    // =========================================
     public void OnBombProjectileLanded(int dmg)
     {
         if (boss == null || boss.currentHP <= 0 || battleEnded)
@@ -789,12 +749,45 @@ public class BattleSystemTurnBased : MonoBehaviour
             txtInfo.text = $"Bomb hits boss for {dealt}!";
 
         if (bossAnim) bossAnim.SetTrigger("Hurt");
-
         RefreshHUD();
 
         if (IsDead(boss))
         {
             EndBattle();
         }
+    }
+
+    // ============================
+    //  鼠标悬停提示（在 EventTrigger 里调用）
+    // ============================
+
+    public void OnHoverSkill()
+    {
+        if (!txtInfo) return;
+        txtInfo.text = skillUsesLeft > 0
+            ? $"Skill uses left: {skillUsesLeft}/{maxSkillUses}"
+            : "No Skill uses left.";
+    }
+
+    public void OnHoverHeal()
+    {
+        if (!txtInfo) return;
+        txtInfo.text = potionsLeft > 0
+            ? $"Potions left: {potionsLeft}"
+            : "No potions left.";
+    }
+
+    public void OnHoverBomb()
+    {
+        if (!txtInfo) return;
+        txtInfo.text = bombsLeft > 0
+            ? $"Bombs left: {bombsLeft}"
+            : "No bombs left.";
+    }
+
+    public void OnHoverExit()
+    {
+        if (txtInfo && state == BattleState.PlayerTurn && !battleEnded)
+            txtInfo.text = "Your turn! Choose an action.";
     }
 }

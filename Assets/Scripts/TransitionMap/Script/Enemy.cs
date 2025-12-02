@@ -14,19 +14,24 @@ public class Enemy : MonoBehaviour
     public float knockbackForceToPlayer = 5f;
 
     [Header("击退")]
-    public float knockbackDistance = 0.15f;   // 被击退的距离（你可以改成 0.1~0.3）
+    public float knockbackDistance = 0.15f;
 
-    [Header("受击闪烁设置")]
+    [Header("受击闪烁")]
     public float flashDuration = 0.25f;
     public float flashInterval = 0.06f;
 
     [Header("Hit Stun")]
-    public float hitStunDuration = 0.05f; // 敌人被攻击时停顿的时间
+    public float hitStunDuration = 0.05f;
 
     [Header("死亡特效")]
     public GameObject deathVfxPrefab;
     public Vector2 deathVfxOffset = new Vector2(0f, 0.4f);
     public float deathVfxLifeTime = 1f;
+
+    [Header("死亡音效")]                   // ⭐ 新增
+    public AudioClip deathSfx;             // ⭐ 新增
+    public float deathSfxVolume = 1f;      // ⭐ 新增
+    private AudioSource audioSrc;          // ⭐ 新增
 
     private int currentHealth;
     private Rigidbody2D rb;
@@ -42,6 +47,15 @@ public class Enemy : MonoBehaviour
         col = GetComponent<Collider2D>();
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
+
+        // ⭐ 新增：如果没有 AudioSource 自动添加
+        audioSrc = GetComponent<AudioSource>();
+        if (audioSrc == null)
+        {
+            audioSrc = gameObject.AddComponent<AudioSource>();
+            audioSrc.playOnAwake = false;
+            audioSrc.spatialBlend = 0;   // 2D 音效（横版一般用 2D）
+        }
     }
 
     // =============================
@@ -53,45 +67,29 @@ public class Enemy : MonoBehaviour
 
         currentHealth -= damage;
 
-        // 播放受击动画
         if (anim != null)
             anim.SetTrigger("Hurt");
 
-        // 轻微击退
         Vector2 knockOffset = hitDirection.normalized * knockbackDistance;
         rb.MovePosition(rb.position + knockOffset);
 
-        // HitStun + 闪烁
         StartCoroutine(HitStunRoutine());
 
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
-    // =============================
-    // Hit Stun + 闪烁协程
-    // =============================
     IEnumerator HitStunRoutine()
     {
-        // 暂停移动（保存速度）
         Vector2 originalVel = rb.linearVelocity;
         rb.linearVelocity = Vector2.zero;
 
-        // 闪烁效果
         StartCoroutine(FlashRoutine());
-
-        // 停顿 hitstunDuration 秒
         yield return new WaitForSeconds(hitStunDuration);
 
-        // 恢复移动
         rb.linearVelocity = originalVel;
     }
 
-    // =============================
-    // 受击闪烁
-    // =============================
     IEnumerator FlashRoutine()
     {
         float timer = 0f;
@@ -106,7 +104,7 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(flashInterval);
         }
 
-        sr.enabled = true; // 最后确保恢复可见
+        sr.enabled = true;
     }
 
     // =============================
@@ -122,6 +120,12 @@ public class Enemy : MonoBehaviour
 
         if (anim != null)
             anim.SetTrigger("Die");
+
+        // ⭐ 死亡音效
+        if (deathSfx != null && audioSrc != null)
+        {
+            audioSrc.PlayOneShot(deathSfx, deathSfxVolume);
+        }
 
         // 死亡特效
         if (deathVfxPrefab != null)
@@ -139,7 +143,7 @@ public class Enemy : MonoBehaviour
     }
 
     // =============================
-    // 接触伤害（撞到玩家）
+    // 碰撞造成伤害
     // =============================
     void OnCollisionEnter2D(Collision2D collision)
     {

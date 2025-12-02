@@ -22,10 +22,9 @@ public class DialogueSystem : MonoBehaviour
     [TextArea] public string hintWhileTyping  = "Press E to skip";
     [TextArea] public string hintWhenComplete = "Press E to continue";
 
-    [Header("Next Scene")]
-    [Tooltip("When the last line is confirmed with E, load this scene.")]
-    public bool loadNextSceneOnEnd = true;
-    public string nextSceneName = "Loadout"; // <-- change to your target scene name
+    [Header("Optional: Shop Panel (for AfterAction.OpenShopPanel)")]
+    [Tooltip("如果某个 DialogueData 的 AfterAction=OpenShopPanel，就会在结束时把这个面板 SetActive(true)。")]
+    public GameObject shopPanelToOpen;
 
     // Runtime state
     private DialogueData data;
@@ -37,7 +36,6 @@ public class DialogueSystem : MonoBehaviour
 
     void Awake()
     {
-        // Always start hidden even if panel is active in editor
         if (panel != null) panel.SetActive(false);
     }
 
@@ -54,25 +52,17 @@ public class DialogueSystem : MonoBehaviour
         Show();
     }
 
-    /// <summary>
-    /// NPC passes the world anchor (e.g., DialogueAnchor at NPC head) to the follower.
-    /// Works whether DialogueWorldFollower is on the panel itself or a child.
-    /// </summary>
+    /// <summary>让对话框跟随一个世界坐标锚点（比如 NPC 头顶）</summary>
     public void SetFollowerTarget(Transform t)
     {
         if (!panel) return;
 
-        // Prefer on panel, otherwise search children
         var follower = panel.GetComponent<DialogueWorldFollower>();
         if (!follower)
             follower = panel.GetComponentInChildren<DialogueWorldFollower>(true);
 
         if (follower)
             follower.SetTarget(t);
-#if UNITY_EDITOR
-        else
-            Debug.LogWarning("[DialogueSystem] No DialogueWorldFollower found on panel or its children.", this);
-#endif
     }
 
     void Show()
@@ -116,7 +106,7 @@ public class DialogueSystem : MonoBehaviour
         {
             if (typing)
             {
-                // Skip typing → show full current line immediately
+                // 跳过打字机，直接显示整行
                 if (co != null) StopCoroutine(co);
 
                 if (txtLine && data != null && data.lines != null && idx < data.lines.Length)
@@ -127,7 +117,7 @@ public class DialogueSystem : MonoBehaviour
             }
             else
             {
-                // Go next, or finish
+                // 下一句 / 结束
                 idx++;
                 if (data == null || data.lines == null || idx >= data.lines.Length)
                 {
@@ -141,12 +131,12 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    /// <summary>Close dialogue and optionally load the next scene.</summary>
+    /// <summary>关闭对话，并根据当前 DialogueData 的 AfterAction 执行后续动作。</summary>
     public void End()
     {
         if (panel) panel.SetActive(false);
 
-        // Clear follower target so panel won't keep following anything after close
+        // 取消跟随
         DialogueWorldFollower follower = null;
         if (panel)
         {
@@ -155,17 +145,50 @@ public class DialogueSystem : MonoBehaviour
         }
         if (follower) follower.SetTarget(null);
 
-        // Cache transition flag before reset
-        bool goNext = loadNextSceneOnEnd && !string.IsNullOrEmpty(nextSceneName);
+        // 先把当前 data 缓存下来，等会儿用它的 afterAction
+        DialogueData.AfterAction action = DialogueData.AfterAction.None;
+        string sceneName = null;
 
-        // Reset local state
+        if (data != null)
+        {
+            action = data.afterAction;
+            sceneName = data.shopSceneName;
+        }
+
+        // 重置本地状态
         data = null;
         idx = 0;
         typing = false;
         co = null;
 
-        // Scene transition
-        if (goNext)
-            SceneManager.LoadScene(nextSceneName);
+        // ========= 根据 AfterAction 执行后续 =========
+        switch (action)
+        {
+            case DialogueData.AfterAction.None:
+                // 什么都不做，只是关掉对话
+                break;
+
+            case DialogueData.AfterAction.OpenShopScene:
+                if (!string.IsNullOrEmpty(sceneName))
+                {
+                    SceneManager.LoadScene(sceneName);
+                }
+                else
+                {
+                    Debug.LogWarning("[DialogueSystem] AfterAction.OpenShopScene set, but shopSceneName is empty.");
+                }
+                break;
+
+            case DialogueData.AfterAction.OpenShopPanel:
+                if (shopPanelToOpen != null)
+                {
+                    shopPanelToOpen.SetActive(true);
+                }
+                else
+                {
+                    Debug.LogWarning("[DialogueSystem] AfterAction.OpenShopPanel set, but shopPanelToOpen is not assigned.", this);
+                }
+                break;
+        }
     }
 }

@@ -250,6 +250,8 @@ MonoBehaviour:
   deathVfxPrefab: {fileID: 148670611427869963, guid: 9a0d8fa38d65b9e4ab432c56ea76bee6, type: 3}
   deathVfxOffset: {x: 0, y: -0.3}
   deathVfxLifeTime: 1
+  deathSfx: {fileID: 8300000, guid: 566d2ea6240b489479a6e9fd608c2621, type: 3}
+  deathSfxVolume: 1
 --- !u!70 &53717167
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1730,6 +1732,8 @@ MonoBehaviour:
   deathVfxPrefab: {fileID: 148670611427869963, guid: 9a0d8fa38d65b9e4ab432c56ea76bee6, type: 3}
   deathVfxOffset: {x: 0, y: 0.3}
   deathVfxLifeTime: 1
+  deathSfx: {fileID: 8300000, guid: 566d2ea6240b489479a6e9fd608c2621, type: 3}
+  deathSfxVolume: 1
 --- !u!70 &557835145
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -2135,6 +2139,8 @@ MonoBehaviour:
   deathVfxPrefab: {fileID: 148670611427869963, guid: 9a0d8fa38d65b9e4ab432c56ea76bee6, type: 3}
   deathVfxOffset: {x: 0, y: -0.3}
   deathVfxLifeTime: 1
+  deathSfx: {fileID: 8300000, guid: 566d2ea6240b489479a6e9fd608c2621, type: 3}
+  deathSfxVolume: 1
 --- !u!70 &641032786
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -7260,7 +7266,7 @@ Transform:
   m_GameObject: {fileID: 1137503345}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.6246514, y: -0.9899974, z: -10}
+  m_LocalPosition: {x: -1.6775446, y: -0.9899974, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7399,6 +7405,8 @@ MonoBehaviour:
   deathVfxPrefab: {fileID: 148670611427869963, guid: 9a0d8fa38d65b9e4ab432c56ea76bee6, type: 3}
   deathVfxOffset: {x: 0, y: -0.3}
   deathVfxLifeTime: 1
+  deathSfx: {fileID: 8300000, guid: 566d2ea6240b489479a6e9fd608c2621, type: 3}
+  deathSfxVolume: 1
 --- !u!70 &1143477056
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -9305,6 +9313,8 @@ MonoBehaviour:
   deathVfxPrefab: {fileID: 148670611427869963, guid: 9a0d8fa38d65b9e4ab432c56ea76bee6, type: 3}
   deathVfxOffset: {x: 0, y: 0.3}
   deathVfxLifeTime: 1
+  deathSfx: {fileID: 8300000, guid: 566d2ea6240b489479a6e9fd608c2621, type: 3}
+  deathSfxVolume: 1
 --- !u!70 &1611207219
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -9664,6 +9674,8 @@ MonoBehaviour:
   deathVfxPrefab: {fileID: 148670611427869963, guid: 9a0d8fa38d65b9e4ab432c56ea76bee6, type: 3}
   deathVfxOffset: {x: 0, y: -0.3}
   deathVfxLifeTime: 1
+  deathSfx: {fileID: 0}
+  deathSfxVolume: 1
 --- !u!70 &1649333796
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -9887,6 +9899,8 @@ MonoBehaviour:
   deathVfxPrefab: {fileID: 148670611427869963, guid: 9a0d8fa38d65b9e4ab432c56ea76bee6, type: 3}
   deathVfxOffset: {x: 0, y: -0.3}
   deathVfxLifeTime: 1
+  deathSfx: {fileID: 8300000, guid: 566d2ea6240b489479a6e9fd608c2621, type: 3}
+  deathSfxVolume: 1
 --- !u!70 &1658601492
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -10776,6 +10790,8 @@ MonoBehaviour:
   deathVfxPrefab: {fileID: 148670611427869963, guid: 9a0d8fa38d65b9e4ab432c56ea76bee6, type: 3}
   deathVfxOffset: {x: 0, y: -0.3}
   deathVfxLifeTime: 1
+  deathSfx: {fileID: 8300000, guid: 566d2ea6240b489479a6e9fd608c2621, type: 3}
+  deathSfxVolume: 1
 --- !u!70 &1936774402
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
