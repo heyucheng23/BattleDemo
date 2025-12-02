@@ -2373,6 +2373,9 @@ MonoBehaviour:
   bombArcHeight: 200
   skillExtraDelay: 1.5
   maxSkillUses: 2
+  victorySfx: {fileID: 8300000, guid: 4dbfbd1a56081db4ca174255a4d56b1f, type: 3}
+  defeatSfx: {fileID: 8300000, guid: 35ce408210dfa9843ba14da86f8efb4e, type: 3}
+  endSfxVolume: 1
 --- !u!224 &1267463339 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 224924297674140736, guid: c8e9e0dc2eb174635861b990cee2b0bb, type: 3}
@@ -2825,7 +2828,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.45074463, y: -174.2792}
+  m_AnchoredPosition: {x: -0.45074463, y: -174.27917}
   m_SizeDelta: {x: -662.7618, y: -348.5558}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1471463144
@@ -3598,7 +3601,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1677313850
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3617,8 +3620,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -12.046997, y: -4.399994}
-  m_SizeDelta: {x: -663.0125, y: -301.5786}
+  m_AnchoredPosition: {x: -1.7890625, y: 2.8450928}
+  m_SizeDelta: {x: -683.5215, y: -308.9763}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1677313851
 MonoBehaviour:

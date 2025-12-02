@@ -84,8 +84,15 @@ public class BattleSystemTurnBased : MonoBehaviour
     public float skillExtraDelay = 0.8f;   // 你可以调大让 Boss 后手更慢
 
     [Header("Skill 使用次数")]
-    public int maxSkillUses = 2;           // ⭐ Skill 总共可用次数
-    int skillUsesLeft;                     // ⭐ 当前剩余次数
+    public int maxSkillUses = 2;           // Skill 总共可用次数
+    int skillUsesLeft;
+
+    [Header("结算音效")]                  // ⭐ 新增：胜利/失败 BGM
+    public AudioClip victorySfx;          // ⭐
+    public AudioClip defeatSfx;           // ⭐
+    [Range(0f, 1f)]
+    public float endSfxVolume = 1f;       // ⭐
+    private AudioSource audioSrc;         // ⭐
 
     // ---- 关卡/战斗静态数据 ----
     StageConfig S;
@@ -134,6 +141,15 @@ public class BattleSystemTurnBased : MonoBehaviour
         if (sliderBossHP && invertBossSlider)
             sliderBossHP.direction = Slider.Direction.RightToLeft;
         if (endPanel) endPanel.SetActive(false);
+
+        // ⭐ 新增：准备播放用的 AudioSource（没有就自动加一个）
+        audioSrc = GetComponent<AudioSource>();
+        if (!audioSrc)
+        {
+            audioSrc = gameObject.AddComponent<AudioSource>();
+            audioSrc.playOnAwake = false;
+            audioSrc.spatialBlend = 0f; // 2D 音效
+        }
     }
 
     void Start()
@@ -142,12 +158,12 @@ public class BattleSystemTurnBased : MonoBehaviour
         S = StageConfigLoader.Load();
         if (S == null) S = new StageConfig
         {
-            HP0 = 250,
-            HP_boss = 905,
-            ATK0 = 40,
-            DEF0 = 0,
-            ATK_boss = 32,
-            T_max = 15
+            HP0      = 100,
+            HP_boss  = 300,
+            ATK0     = 20,
+            DEF0     = 0,
+            ATK_boss = 25,
+            T_max    = 10
         };
 
         // 读取 Loadout 购买结果
@@ -253,7 +269,7 @@ public class BattleSystemTurnBased : MonoBehaviour
             btnHeal.interactable = interactable && (potionsLeft > 0 && healPerPotion > 0);
 
         if (btnSkill)
-            btnSkill.interactable = interactable && (skillUsesLeft > 0);  // ⭐ Skill 没次数就灰掉
+            btnSkill.interactable = interactable && (skillUsesLeft > 0);
     }
 
     // ============================
@@ -283,7 +299,7 @@ public class BattleSystemTurnBased : MonoBehaviour
     public void OnClick_Skill()
     {
         if (state != BattleState.PlayerTurn || battleEnded) return;
-        if (skillUsesLeft <= 0) return;           // ⭐ 没次数直接不响应
+        if (skillUsesLeft <= 0) return;
         StartCoroutine(PlayerSkillRoutine());
     }
 
@@ -430,7 +446,7 @@ public class BattleSystemTurnBased : MonoBehaviour
         boss.TakeDamage(rawDmg);
         int dealt = Mathf.Clamp(beforeHP - Mathf.Max(0, boss.currentHP), 0, rawDmg);
 
-        // ⭐ 扣除次数
+        // 扣 Skill 次数
         skillUsesLeft = Mathf.Max(0, skillUsesLeft - 1);
 
         if (txtInfo)
@@ -495,7 +511,9 @@ public class BattleSystemTurnBased : MonoBehaviour
 
         int before = player.currentHP;
         int rawDmg   = bossHitPerTurn;
-        int finalDmg = Mathf.Max(0, rawDmg - player.battleDEF);
+        int finalDmg = 0;
+        if (rawDmg > 0)
+            finalDmg = Mathf.Max(1, rawDmg - player.battleDEF); // 至少 1 点伤害
         player.TakeDamage(finalDmg);
 
         int taken = Mathf.Clamp(before - Mathf.Max(0, player.currentHP), 0, finalDmg);
@@ -550,6 +568,20 @@ public class BattleSystemTurnBased : MonoBehaviour
             else               txtInfo.text = "Battle ended.";
         }
 
+        // ⭐ 新增：结算音效
+        if (audioSrc != null)
+        {
+            if (win && victorySfx != null)
+            {
+                audioSrc.PlayOneShot(victorySfx, endSfxVolume);
+            }
+            else if ((lose || bothDead) && defeatSfx != null)
+            {
+                audioSrc.PlayOneShot(defeatSfx, endSfxVolume);
+            }
+        }
+
+        // 记录结果
         battleEndTime = Time.unscaledTime;
         int endPlayerHP = player ? Mathf.Max(0, player.currentHP) : 0;
         int endBossHP   = boss   ? Mathf.Max(0, boss.currentHP)   : 0;
@@ -662,7 +694,7 @@ public class BattleSystemTurnBased : MonoBehaviour
                 bossFillImage.color   = HpColor((float)boss.currentHP   / Mathf.Max(1, boss.maxHP));
         }
 
-        // 按钮状态也随时刷新一下
+        // 更新按钮状态
         SetCommandButtonsInteractable(state == BattleState.PlayerTurn && !battleEnded);
     }
 
@@ -732,7 +764,7 @@ public class BattleSystemTurnBased : MonoBehaviour
     }
 
     // =========================================
-    // 由炸弹抛物体调用：落地后造成伤害 + 播放爆炸动画
+    // 由炸弹抛物体调用：落地后造成伤害
     // =========================================
     public void OnBombProjectileLanded(int dmg)
     {
