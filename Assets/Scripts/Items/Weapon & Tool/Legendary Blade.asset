@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Legendary Blade
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSO
   displayName: Legendary Blade
-  cost: 380
+  cost: 420
   icon: {fileID: 21300000, guid: 90e99a7fde056a4418b9fe16084adb5c, type: 3}
   atkBonus: 30

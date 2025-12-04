@@ -1629,8 +1629,9 @@ MonoBehaviour:
   dialoguePanel: {fileID: 1071699444}
   dialogueText: {fileID: 1253139873}
   dialogueLines:
-  - 'Hero: Today your reign will come to an end'
-  - 'Demon: Pathetic! My power is unmatched'
+  - "Hero: I\u2019ll put an end to your tyranny, here and now!"
+  - "BA885: End me? Don\u2019t make me laugh\u2014your fate was sealed the moment
+    you stepped in."
   typewriter: {fileID: 1253139876}
   afterDialogueDelay: 1
   nextSceneName: TurnBattle
